@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useRef, useLayoutEffect } = React;
+
+    function DemoApp() {
+      // useState: Quản lý trạng thái của form
+      const [form, setForm] = useState({ name: '', email: '' });
+      
+      // useRef: Lưu trữ tham chiếu đến input
+      const inputRef = useRef(null);
+      
+      // useLayoutEffect: Đo kích thước của div
+      const [divWidth, setDivWidth] = useState(0);
+      const divRef = useRef(null);
+
+      useLayoutEffect(() => {
+        if (divRef.current) {
+          const { width } = divRef.current.getBoundingClientRect();
+          setDivWidth(width);
+        }
+      }, []);
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm(prevForm => ({ ...prevForm, [name]: value }));
+      };
+
+      const handleFocusClick = () => {
+        inputRef.current.focus();
+      };
+
+      return (
+        <div className="p-4 max-w-md mx-auto">
+          <h1 className="text-2xl font-bold mb-4">React Hooks Demo</h1>
+          
+          {/* Form với useState */}
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold">Form (useState)</h2>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleInputChange}
+              placeholder="Nhập tên"
+              className="border p-2 w-full mb-2"
+            />
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleInputChange}
+              placeholder="Nhập email"
+              className="border p-2 w-full mb-2"
+            />
+            <p>Tên: {form.name}</p>
+            <p>Email: {form.email}</p>
+          </div>
+
+          {/* Auto-focus input với useRef */}
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold">Auto-focus Input (useRef)</h2>
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Click nút để focus"
+              className="border p-2 w-full mb-2"
+            />
+            <button
+              onClick={handleFocusClick}
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Focus Input
+            </button>
+          </div>
+
+          {/* Đo kích thước div với useLayoutEffect */}
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold">Dynamic Layout (useLayoutEffect)</h2>
+            <div ref={divRef} className="bg-gray-200 p-4 w-64">
+              Div này có chiều rộng: {divWidth}px
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<DemoApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
